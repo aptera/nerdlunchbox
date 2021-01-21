@@ -16,9 +16,9 @@ module.exports = async function (context, req) {
 
     function params() {
         return {
-            token: process.env["SLACK_API_TOKEN"],
-            channel: process.env["SLACK_CHANNEL_ID"],
-            oldest: process.env["QUERY_SINCE"]
+            token: process.env.SLACK_API_TOKEN,
+            channel: process.env.SLACK_CHANNEL_ID,
+            oldest: process.env.QUERY_SINCE
         };
     }
 }

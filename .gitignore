@@ -1,2 +1,2 @@
-api/local.settings.json
+api/local.settings*.json
 node_modules
