@@ -1,7 +1,4 @@
 {
-    "scripts": {
-        "build": "npm install"
-    },
     "dependencies": {
         "node-fetch": "^2.6.1"
     }
