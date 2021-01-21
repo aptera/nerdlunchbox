@@ -1,0 +1,258 @@
+<html>
+
+<head>
+
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+            font-size: 1.5rem;
+        }
+
+        p {
+            color: #02456b;
+        }
+
+        em {
+            font-style: normal;
+            font-weight: bold;
+        }
+
+        article {
+            width: 90%;
+            margin: auto;
+        }
+
+        @media(min-width:992px) {
+            article {
+                width: 50%;
+            }
+        }
+
+        h1 {
+            text-transform: uppercase;
+            color: #789;
+            margin-top: 2rem;
+        }
+
+        h1 span {
+            color: #02456b;
+        }
+
+        ol {
+            padding-left: 0;
+        }
+
+        li {
+            padding: 0 0 2rem 2rem;
+            list-style: none;
+            border: 0.5rem solid transparent;
+            border-radius: 1rem;
+        }
+
+        li:first-of-type {
+            border-color: #ffc000;
+        }
+
+        blockquote {
+            font-size: 1.2rem;
+            margin-left: 0;
+            padding-left: 1rem;
+            border-left: 5px solid #abc;
+        }
+
+        blockquote p {
+            color: #789;
+            line-height: 1.7rem;
+            text-align: justify;
+        }
+
+        .votes {
+            font-weight: bold;
+        }
+
+        .upvotes,
+        .downvotes {
+            display: inline-block;
+        }
+
+        .upvotes {
+            color: #FF8b60;
+        }
+
+        .downvotes {
+            color: #9494FF;
+        }
+    </style>
+
+</head>
+
+<body>
+
+    <article class="container">
+        <h1>Nerd<span>lunch</span>box</h1>
+        <ol id="results">
+            Loading...
+        </ol>
+    </article>
+    <script src="https://unpkg.com/lodash@4.17.20/lodash.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <script>
+        const query = "https://nerdlunchbox.azurewebsites.net/api/content?code=aa5nlrJqyY2yqZsJnZtjId9lUaga5WZeW0pQa6Sa3eaLWNOHnxSTbQ=="
+
+        console.log("Loading...");
+        const result = fetch(query)
+            .then(res => res.json())
+            .then(result => {
+                display(ranked(result.messages));
+            });
+
+        function ranked(messages) {
+            return _.chain(messages)
+                .filter(m => m.text.includes("#content"))
+                .map(contentAndVotes)
+                .filter(m => !m.watched)
+                .map(scores)
+                .orderBy(["score", "timestamp"], ["desc", "asc"])
+                .value();
+        }
+
+        function contentAndVotes(message) {
+            return {
+                timestamp: message.ts,
+                content: message.text.replace("#content", ""),
+                upvotes: count(message.reactions, "upvote"),
+                downvotes: count(message.reactions, "downvote"),
+                watched: !!count(message.reactions, "sandwich")
+            };
+        }
+
+        function count(list, name) {
+            return _.chain(list)
+                .filter(r => r.name == name)
+                .map(r => r.users)
+                .flatten()
+                .value()
+                .length
+        }
+
+        function scores(message) {
+            return {
+                ...message,
+                score: message.upvotes - message.downvotes
+            };
+        }
+
+        function display(submissions) {
+            const list = document.getElementById("results");
+            list.innerHTML = "";
+            submissions.forEach(addItemTo(list));
+        }
+
+        function addItemTo(list) {
+            return r => {
+                const li = document.createElement("li");
+                li.innerHTML = render(r.content);
+                addVotes(li, r);
+
+                list.appendChild(li);
+            };
+        }
+
+        function addVotes(li, r) {
+            const votes = div("votes");
+            votes.appendChild(div("upvotes", `&uarr;${r.upvotes}`));
+            votes.appendChild(div("downvotes", `&darr;${r.downvotes}`));
+            li.appendChild(votes);
+        }
+
+        function div(className, content) {
+            const div = document.createElement("div");
+            div.className = className;
+            div.innerHTML = content || "";
+            return div;
+        }
+
+        function render(content) {
+            return marked(
+                decodeBlockquotes(
+                    removeAutoLinks(content)),
+                {
+                    breaks: true
+                });
+        }
+
+        function decodeBlockquotes(content) {
+            return content.replace(/&gt;+/g, '>');
+        }
+
+        function removeAutoLinks(content) {
+            return content.replace(/<http:\/\/.+\|(.+)>/g, '$1');
+        }
+
+
+    </script>
+    <script id="spec">
+        'use strict';
+
+        console.log("Specifications:");
+        let prefix = null;
+        const messages = [
+            {
+                ts: "1605204614.032600",
+                text: "popular #content",
+                reactions: [
+                    {
+                        name: "upvote",
+                        users: ["", "", ""]
+                    },
+                    {
+                        name: "downvote",
+                        users: []
+                    }
+                ]
+            },
+            {
+                ts: "1604076162.015600",
+                text: "slightly older #content",
+                reactions: [
+                    {
+                        name: "upvote",
+                        users: ["", "", "", ""]
+                    },
+                    {
+                        name: "downvote",
+                        users: [""]
+                    }
+                ]
+            }
+        ];
+
+        prefix = "The ranked messages";
+        assert("given equal scores favor older entries", () => {
+            return equals([
+                "slightly older",
+                "popular",
+            ], ranked(messages).map(m => m.content.trim()));
+        })
+
+        function assert(message, condition) {
+            const fullMessage = `${prefix} ${message}.`
+            if (condition())
+                console.log(fullMessage)
+            else
+                throw new Error(`FAIL: ${fullMessage}`)
+        }
+
+        function equals(a, b) {
+            const result = JSON.stringify(a) === JSON.stringify(b);
+            if (!result)
+                console.error(`${JSON.stringify(b)} does not equal ${JSON.stringify(a)}.`);
+            return result;
+        }
+
+        console.log("All tests have passed.");
+
+    </script>
+</body>
+
+</html>
