@@ -15,10 +15,10 @@ module.exports = async function (context, req) {
     }
 
     function params() {
-        return {
+        return querystring.stringify({
             token: process.env.SLACK_API_TOKEN,
             channel: process.env.SLACK_CHANNEL_ID,
             oldest: process.env.QUERY_SINCE
-        };
+        });
     }
 }
