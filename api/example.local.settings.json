@@ -1,0 +1,9 @@
+{
+  "IsEncrypted": false,
+  "Values": {
+    "SLACK_API_TOKEN": "your-Slack-API-token",
+    "SLACK_CHANNEL_ID": "your-Slack-channel-ID",
+    "QUERY_SINCE": "your-Slack-timestamp",
+    "FUNCTIONS_WORKER_RUNTIME": "node"
+  }
+}
