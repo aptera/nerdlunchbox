@@ -1,12 +1,13 @@
 const fetch = require("node-fetch");
 const querystring = require('querystring');
+const ranked = require("./ranked");
 
 module.exports = async function (context, req) {
     const result = await fetch(url())
         .then(res => res.json());
 
     context.res = {
-        body: result
+        body: ranked(result.messages)
     };
 
     function url() {

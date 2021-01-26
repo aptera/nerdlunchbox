@@ -1,5 +1,13 @@
 {
+    "scripts": {
+        "test": "jasmine",
+        "tdd": "nodemon --ext js --exec 'jasmine'"
+    },
     "dependencies": {
+        "lodash": "^4.17.20",
         "node-fetch": "^2.6.1"
+    },
+    "devDependencies": {
+        "jasmine": "^3.6.4"
     }
 }

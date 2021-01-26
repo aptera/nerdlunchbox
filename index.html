@@ -8,6 +8,10 @@
             font-size: 1.5rem;
         }
 
+        a {
+            text-decoration: none;
+        }
+
         p {
             color: #02456b;
         }
@@ -94,51 +98,14 @@
             Loading...
         </ol>
     </article>
-    <script src="https://unpkg.com/lodash@4.17.20/lodash.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <script>
         console.log("Loading...");
         const result = fetch("/api/content")
             .then(res => res.json())
             .then(result => {
-                display(ranked(result.messages));
+                display(result);
             });
-
-        function ranked(messages) {
-            return _.chain(messages)
-                .filter(m => m.text.includes("#content"))
-                .map(contentAndVotes)
-                .filter(m => !m.watched)
-                .map(scores)
-                .orderBy(["score", "timestamp"], ["desc", "asc"])
-                .value();
-        }
-
-        function contentAndVotes(message) {
-            return {
-                timestamp: message.ts,
-                content: message.text.replace("#content", ""),
-                upvotes: count(message.reactions, "upvote"),
-                downvotes: count(message.reactions, "downvote"),
-                watched: !!count(message.reactions, "sandwich")
-            };
-        }
-
-        function count(list, name) {
-            return _.chain(list)
-                .filter(r => r.name == name)
-                .map(r => r.users)
-                .flatten()
-                .value()
-                .length
-        }
-
-        function scores(message) {
-            return {
-                ...message,
-                score: message.upvotes - message.downvotes
-            };
-        }
 
         function display(submissions) {
             const list = document.getElementById("results");
@@ -148,19 +115,22 @@
 
         function addItemTo(list) {
             return r => {
-                const li = document.createElement("li");
-                li.innerHTML = render(r.content);
-                addVotes(li, r);
+                const a = document.createElement("a");
+                a.innerHTML = render(r.content);
+                a.href = r.url;
+                addVotes(a, r);
 
+                const li = document.createElement("li");
+                li.appendChild(a);
                 list.appendChild(li);
             };
         }
 
-        function addVotes(li, r) {
+        function addVotes(to, r) {
             const votes = div("votes");
             votes.appendChild(div("upvotes", `&uarr;${r.upvotes}`));
             votes.appendChild(div("downvotes", `&darr;${r.downvotes}`));
-            li.appendChild(votes);
+            to.appendChild(votes);
         }
 
         function div(className, content) {
@@ -186,69 +156,6 @@
         function removeAutoLinks(content) {
             return content.replace(/<http:\/\/.+\|(.+)>/g, '$1');
         }
-
-
-    </script>
-    <script id="spec">
-        'use strict';
-
-        console.log("Specifications:");
-        let prefix = null;
-        const messages = [
-            {
-                ts: "1605204614.032600",
-                text: "popular #content",
-                reactions: [
-                    {
-                        name: "upvote",
-                        users: ["", "", ""]
-                    },
-                    {
-                        name: "downvote",
-                        users: []
-                    }
-                ]
-            },
-            {
-                ts: "1604076162.015600",
-                text: "slightly older #content",
-                reactions: [
-                    {
-                        name: "upvote",
-                        users: ["", "", "", ""]
-                    },
-                    {
-                        name: "downvote",
-                        users: [""]
-                    }
-                ]
-            }
-        ];
-
-        prefix = "The ranked messages";
-        assert("given equal scores favor older entries", () => {
-            return equals([
-                "slightly older",
-                "popular",
-            ], ranked(messages).map(m => m.content.trim()));
-        })
-
-        function assert(message, condition) {
-            const fullMessage = `${prefix} ${message}.`
-            if (condition())
-                console.log(fullMessage)
-            else
-                throw new Error(`FAIL: ${fullMessage}`)
-        }
-
-        function equals(a, b) {
-            const result = JSON.stringify(a) === JSON.stringify(b);
-            if (!result)
-                console.error(`${JSON.stringify(b)} does not equal ${JSON.stringify(a)}.`);
-            return result;
-        }
-
-        console.log("All tests have passed.");
 
     </script>
 </body>
