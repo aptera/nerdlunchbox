@@ -1,0 +1,101 @@
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+    font-size: 2rem;
+}
+
+a {
+    text-decoration: none;
+}
+
+p {
+    color: #02456b;
+    margin-block-start: 1rem;
+}
+
+em {
+    font-style: normal;
+    font-weight: bold;
+}
+
+article {
+    width: 95%;
+    margin: auto;
+}
+
+h1 {
+    text-transform: uppercase;
+    color: #789;
+    margin-top: 2rem;
+}
+
+h1 span {
+    color: #02456b;
+}
+
+ol {
+    padding-left: 0;
+}
+
+li {
+    padding: 0 0 1rem 1rem;
+    list-style: none;
+    border: 0.5rem solid transparent;
+    border-radius: 1rem;
+}
+
+li:first-of-type {
+    border-color: #ffc000;
+}
+
+blockquote {
+    font-size: 1.5rem;
+    margin-left: 0;
+    padding-left: 1rem;
+    border-left: 5px solid #abc;
+}
+
+blockquote p {
+    color: #789;
+    line-height: 2rem;
+}
+
+.votes {
+    font-weight: bold;
+}
+
+.upvotes,
+.downvotes {
+    display: inline-block;
+}
+
+.upvotes {
+    color: #FF8b60;
+}
+
+.downvotes {
+    color: #9494FF;
+}
+
+@media(min-width:992px) {
+
+    p {
+        margin-block-start: 1rem;
+    }
+
+    li {
+        padding: 0 0 2rem 2rem;
+    }
+
+    article {
+        width: 50%;
+    }
+
+    blockquote {
+        font-size: 1.2rem;
+    }
+
+    blockquote p {
+        text-align: justify;
+    }
+
+}
