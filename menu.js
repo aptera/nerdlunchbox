@@ -42,8 +42,8 @@ function render(content) {
     return marked(
         decodeBlockquotes(
             removeAutoLinks(content)), {
-            breaks: true
-        });
+        breaks: true
+    });
 }
 
 function decodeBlockquotes(content) {
