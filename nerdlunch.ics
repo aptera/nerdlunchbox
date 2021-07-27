@@ -1,0 +1,18 @@
+BEGIN:VCALENDAR
+PRODID:-//Microsoft Corporation//SharePoint MIMEDIR//EN
+VERSION:2.0
+METHOD:PUBLISH
+BEGIN:VEVENT
+UID;TYPE=SharePoint:1.0.2021-07-29T19:00:00Z
+DTSTART;TZID=America/New_York:20210729T120000
+DTEND;TZID=America/New_York:20210729T130000
+RRULE:FREQ=WEEKLY;INTERVAL=1;WKST=SU
+LOCATION;ENCODING=8BIT;CHARSET=utf-8:https://apterainc.zoom.us/j/201326335?pwd=YXF1VXlsVkN4K2E5OVFiUGZBbXF6QT09
+TRANSP:OPAQUE
+SEQUENCE:1
+DTSTAMP:20210727T165027Z
+SUMMARY;ENCODING=8BIT;CHARSET=utf-8:Nerd Lunch
+DESCRIPTION;ENCODING=8BIT;CHARSET=utf-8:If It's Thursday\, It's Nerd Lunch Day.\n\nThis software thing we're doing here doesn't happen in a vacuum. We're adrift in a rolling ocean of new ideas\, and half the job is just to keep up with the good ones.\n\nWhy do it alone? Grab your grub and join your fellow nerd while we take in software-pertinent talks\, screencasts\, courses\, and whatever else we can pry off the pipes and fit into an hour.\n\nThe Nerd Lunch is totally voluntary\, casual\, and remote-friendly. And it's a killer opportunity to break bread and learn with the rest of the tribe.\n\nStay tuned to our Slack channel\, and I'll see you at lunch!  
+CLASS:PUBLIC
+END:VEVENT
+END:VCALENDAR
